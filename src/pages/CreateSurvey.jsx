@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Container, Title, TextInput, Switch, Button, Card, Text, ActionIcon, Stack, Group, Divider } from '@mantine/core';
 import { IconTrash, IconPlus, IconSend } from '@tabler/icons-react';
 import { newSurveyStore } from '../stores/NewSurveyStore';
+import { userStore } from '../stores/userStore';
 
 class CreateSurvey extends Component {
   handleSubmit = async (e) => {
@@ -19,11 +20,29 @@ class CreateSurvey extends Component {
     }
   };
 
+  handleLogout = async () => {
+    await userStore.logout();
+  };
+
   render() {
     const store = newSurveyStore;
 
     return (
       <Container size="sm" py="xl">
+
+        <Group justify="space-between" mb="xl" style={{ borderBottom: '1px solid #eee', paddingBottom: '15px' }}>
+          <div>
+            <Title order={4} c="blue">SekAir System</Title>
+            <Text size="xs" c="dimmed">
+              Logged in as: <strong style={{ color: '#333' }}>{userStore.profile?.name || 'Student'}</strong> ({userStore.profile?.role})
+            </Text>
+          </div>
+
+          <Button color="red" variant="light" size="xs" onClick={this.handleLogout}>
+            Logout
+          </Button>
+        </Group>
+
         <Title order={2} mb="lg" ta="center" c="blue">
           Create New Survey
         </Title>
@@ -66,9 +85,9 @@ class CreateSurvey extends Component {
                   
                   {/* כפתור מחיקה - יוצג רק אם יש יותר משאלה אחת בטופס */}
                   {store.questions.length > 1 && (
-                    <ActionIcon 
-                      color="red" 
-                      variant="light" 
+                    <ActionIcon
+                      color="red"
+                      variant="light"
                       onClick={() => store.removeQuestion(qIndex)}
                     >
                       <IconTrash size={16} />
@@ -103,19 +122,19 @@ class CreateSurvey extends Component {
             ))}
 
             <Group position="apart" mt="lg">
-              <Button 
-                variant="outline" 
-                leftIcon={<IconPlus size={16} />} 
+              <Button
+                variant="outline"
+                leftSection={<IconPlus size={16} />}
                 onClick={store.addQuestion}
                 disabled={store.isLoading}
               >
                 Add Question
               </Button>
 
-              <Button 
-                type="submit" 
-                color="blue" 
-                rightIcon={<IconSend size={16} />}
+              <Button
+                type="submit"
+                color="blue"
+                rightSection={<IconSend size={16} />}
                 loading={store.isLoading}
               >
                 Publish Survey
