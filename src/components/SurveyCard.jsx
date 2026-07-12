@@ -1,21 +1,46 @@
 import React from 'react';
-import { Container, Title, Grid, Card, Text, Badge, Group, Button, Stack, Box, Flex } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
+import { observer } from 'mobx-react-lite';
+import { Container, Title, Grid, Card, Text, Badge, Group, Button, Stack, Box, Flex, ActionIcon } from '@mantine/core';
+import { IconCheck, IconTrash, IconLock, IconWorld } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
+import { userStore } from '../stores/UserStore';
+import { dashboardStore } from '../stores/DashboardStore';
+import { getCategoryColor } from '../constants/categories';
+import { SurveyVisibilityBadge } from './SurveyVisibiltyBadge';
 
 const SurveyCard = ({ survey }) => {
     const navigate = useNavigate();
+
+    const handleDelete = (e) => {
+        e.stopPropagation();
+        if (window.confirm(`Are you sure you want to delete "${survey.title}"?`)) {
+        dashboardStore.deleteSurvey(survey.id);
+        }
+    };
+
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder h="100%">
             <Stack justify="space-between" h="100%">
                 <Box>
                   <Group justify="space-between" mb="xs">
-                        <Badge color="blue" variant="light">
+                        <Badge color={getCategoryColor(survey.category)} variant="light">
                             {survey.category}
                         </Badge>
-                        <Badge color={survey.is_anonymous ? "indigo" : "teal"} variant="filled">
-                            {survey.is_anonymous ? "Anonymous" : "Public"}
-                        </Badge>
+
+                        <Group gap="xs" mt="sm">
+                            <SurveyVisibilityBadge isAnonymous={survey.is_anonymous} />
+                        </Group>
+
+                        {userStore.isAdmin && (
+                            <ActionIcon 
+                                color="red" 
+                                variant="subtle" 
+                                onClick={handleDelete}
+                                title="Delete Survey"
+                            >
+                            <IconTrash size={18} />
+                            </ActionIcon>
+                        )}
                   </Group>
 
                   <Text fw={600} size="lg" mt="sm" lh="sm">

@@ -4,7 +4,8 @@ import { supabase } from '../services/supabaseClient';
 export class DashboardStore {
     surveys = [];
     searchQuery = '';
-    selectedCategory = 'all'
+    selectedCategory = 'all';
+    visibilityFilter = 'all';
     isLoading = false;
 
     constructor() {
@@ -12,10 +13,13 @@ export class DashboardStore {
             surveys: observable,
             searchQuery: observable,
             selectedCategory: observable,
+            visibilityFilter: observable,
             isLoading: observable,
             setSearchQuery: action,
             setSelectedCategory: action,
+            setVisibilityFilter: action,
             fetchSurveys: action,
+            deleteSurvey: action,
             filteredSurveys: computed
         });
     }
@@ -26,6 +30,10 @@ export class DashboardStore {
 
     setSelectedCategory(category) {
         this.selectedCategory = category;
+    }
+
+    setVisibilityFilter(filter) {
+        this.visibilityFilter = filter;
     }
 
     async fetchSurveys() {
@@ -50,10 +58,49 @@ export class DashboardStore {
 
     get filteredSurveys() {
         return this.surveys.filter(survey => {
-            const matchesCategory = this.selectedCategory === 'all' || survey.category === this.selectedCategory;
-            const matchesSearch = survey.title?.toLowerCase().includes(this.searchQuery.toLowerCase()) || false;
-            return matchesCategory && matchesSearch;
+            // 1. Category Filter
+            const currentSelected = this.selectedCategory.toLowerCase();
+            const surveyCategory = survey.category?.toLowerCase() || '';
+            const matchesCategory = currentSelected === 'all' || surveyCategory === currentSelected;
+            
+            // 2. Anonymity / Visibility Filter
+            let matchesVisibility = true;
+            if (this.visibilityFilter === 'public') {
+                matchesVisibility = survey.is_anonymous === false;
+            } else if (this.visibilityFilter === 'anonymous') {
+                matchesVisibility = survey.is_anonymous === true;
+            }
+
+            // 3. Text Search Filter
+            const search = this.searchQuery.toLowerCase().trim();
+            if (!search) return matchesCategory && matchesVisibility;
+
+            const matchesTitle = survey.title?.toLowerCase().includes(search) || false;
+            const matchesQuestions = survey.questions?.some(q => 
+                q.question_text?.toLowerCase().includes(search)
+            ) || false;
+            
+            return matchesCategory && matchesVisibility && (matchesTitle || matchesQuestions);
         });
+    }
+
+    async deleteSurvey(surveyId) {
+        try {
+            const { error } = await supabase
+                .from('surveys')
+                .delete()
+                .eq('id', surveyId);
+
+            if (error) throw error;
+
+            runInAction(() => {
+                this.surveys = this.surveys.filter(survey => survey.id !== surveyId);
+            });
+        } 
+        catch (err) {
+            console.error('Error deleting survey:', err.message);
+            alert('Failed to delete survey');
+        }
     }
 }
 

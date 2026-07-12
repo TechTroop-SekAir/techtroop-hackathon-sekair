@@ -3,11 +3,11 @@ import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { Container, Title, Grid, Card, Text, Badge, Group, Button, Stack, Box, Flex, Loader, LoadingOverlay } from '@mantine/core';
 import { IconPlus, IconCheck } from '@tabler/icons-react';
-// import SurveyFilters from '../components/SurveyFilters';
+import SurveyFilters from '../components/SurveyFilters';
 import { dashboardStore } from '../stores/DashboardStore';
 import SurveyCard from '../components/SurveyCard';
 
-const Dashboard = observegr(() => {
+const Dashboard = observer(() => {
   const store = dashboardStore;
   const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ const Dashboard = observegr(() => {
           </Button>
         </Flex>
 
-        {/* <SurveyFilters /> */}
+        <SurveyFilters />
 
         <Grid mt="lg">
           {store.filteredSurveys.map((survey) => (
