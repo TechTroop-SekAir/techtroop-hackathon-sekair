@@ -3,15 +3,19 @@ import { observable, action, makeObservable } from 'mobx';
 export class VoteSurveyStore {
   constructor() {
     this.currentSurvey = null;
-    this.selectedOptions = {}; 
+    this.selectedOptions = {};
     this.isLoading = false;
     this.isSubmitting = false;
+    this.isAnswered = false;
+    this.answeredSurveys = [];
 
     makeObservable(this, {
       currentSurvey: observable,
       selectedOptions: observable,
       isLoading: observable,
       isSubmitting: observable,
+      isAnswered: observable,
+      answeredSurveys: observable,
       loadSurvey: action,
       selectOption: action,
       submitVote: action
@@ -20,7 +24,8 @@ export class VoteSurveyStore {
 
   loadSurvey(surveyId) {
     this.isLoading = true;
-    
+    this.isAnswered = false;
+
     // Mock - מדמה שליפת סקר ספציפי מה-DB
     setTimeout(() => {
       this.currentSurvey = {
@@ -40,6 +45,12 @@ export class VoteSurveyStore {
           }
         ]
       };
+      if (this.answeredSurveys.indexOf(surveyId) !== -1){
+        this.isAnswered = true;
+      } else{
+        this.isAnswered = false;
+      }
+
       this.isLoading = false;
     }, 500);
   }
@@ -51,7 +62,7 @@ export class VoteSurveyStore {
 
   async submitVote() {
     this.isSubmitting = true;
-    
+
     const votePayload = {
       survey_id: this.currentSurvey.id,
       answers: this.selectedOptions
@@ -61,9 +72,11 @@ export class VoteSurveyStore {
 
     // Demo: submission to Supabase
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     this.isSubmitting = false;
     this.selectedOptions = {};
+    this.answeredSurveys.push(this.currentSurvey.id);
+    this.isAnswered = true;
     return true;
   }
 }
