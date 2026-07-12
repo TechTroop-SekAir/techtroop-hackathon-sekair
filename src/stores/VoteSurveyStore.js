@@ -1,14 +1,16 @@
-import { observable, action, makeObservable } from 'mobx';
+import { observable, action, makeObservable, runInAction } from 'mobx';
+import { supabase } from '../services/supabaseClient';
 
 export class VoteSurveyStore {
-  constructor() {
-    this.currentSurvey = null;
-    this.selectedOptions = {};
-    this.isLoading = false;
-    this.isSubmitting = false;
-    this.isAnswered = false;
-    this.answeredSurveys = [];
 
+  currentSurvey = null;
+  selectedOptions = {};
+  isLoading = false;
+  isSubmitting = false;
+  isAnswered = false;
+  answeredSurveys = [];
+
+  constructor() {
     makeObservable(this, {
       currentSurvey: observable,
       selectedOptions: observable,
@@ -22,37 +24,55 @@ export class VoteSurveyStore {
     });
   }
 
-  loadSurvey(surveyId) {
+  async loadSurvey(surveyId) {
     this.isLoading = true;
     this.isAnswered = false;
 
-    // Mock - מדמה שליפת סקר ספציפי מה-DB
-    setTimeout(() => {
-      this.currentSurvey = {
-        id: surveyId,
-        title: 'Favorite Tech Stack for Hackathon',
-        is_anonymous: false,
-        questions: [
-          {
-            id: 'q1',
-            question_text: 'Which frontend library are you using?',
-            options: ['React', 'Vue', 'Angular', 'Svelte']
-          },
-          {
-            id: 'q2',
-            question_text: 'Which state management fits best?',
-            options: ['MobX', 'Redux', 'Context API', 'Zustand']
-          }
-        ]
-      };
-      if (this.answeredSurveys.indexOf(surveyId) !== -1){
-        this.isAnswered = true;
-      } else{
-        this.isAnswered = false;
-      }
+    try {
+      const { data, error } = await supabase
+        .from('surveys')
+        .select(`
+          id,
+          title,
+          is_anonymous,
+          category,
+          questions (
+            id,
+            question_text,
+            options
+          )
+        `)
+        .eq('id', surveyId)
+        .single();
 
-      this.isLoading = false;
-    }, 500);
+      if (error) throw error;
+
+      runInAction(() => {
+        this.currentSurvey = {
+          id: data.id,
+          title: data.title,
+          is_anonymous: data.is_anonymous,
+          category: data.category,
+          questions: data.questions || []
+        };
+
+        if (this.answeredSurveys.indexOf(surveyId) !== -1) {
+          this.isAnswered = true;
+        } else {
+          this.isAnswered = false;
+        }
+      });
+
+    } catch (err) {
+      console.error('Error fetching survey from Supabase:', err.message);
+      runInAction(() => {
+        this.currentSurvey = null;
+      });
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
   }
 
 
@@ -65,19 +85,29 @@ export class VoteSurveyStore {
 
     const votePayload = {
       survey_id: this.currentSurvey.id,
-      answers: this.selectedOptions
+      answers: { ...this.selectedOptions }
     };
 
     console.log('Sending vote payload to DB:', votePayload);
 
-    // Demo: submission to Supabase
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    this.isSubmitting = false;
-    this.selectedOptions = {};
-    this.answeredSurveys.push(this.currentSurvey.id);
-    this.isAnswered = true;
-    return true;
+      runInAction(() => {
+        this.isSubmitting = false;
+        this.selectedOptions = {};
+        this.answeredSurveys.push(this.currentSurvey.id);
+        this.isAnswered = true;
+      });
+      return true;
+
+    } catch (err) {
+      console.error('Error submitting vote:', err.message);
+      runInAction(() => {
+        this.isSubmitting = false;
+      });
+      return false;
+    }
   }
 }
 
