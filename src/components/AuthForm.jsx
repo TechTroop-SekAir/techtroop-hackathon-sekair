@@ -13,7 +13,7 @@ export const AuthForm = observer(() => {
 
   useEffect(() => {
     if (userStore.isAuthenticated) {
-      navigate('/create', { replace: true });
+      navigate('/dashboard', { replace: true });
     }
   }, [userStore.isAuthenticated, navigate]);
 
