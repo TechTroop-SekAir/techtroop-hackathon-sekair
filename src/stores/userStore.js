@@ -3,9 +3,9 @@ import { authService } from '../services/authService';
 import { supabase } from '../services/supabaseClient';
 
 class UserStore {
-  user = null;       
-  profile = null;   
-  isLoading = true;  
+  user = null;
+  profile = null;
+  isLoading = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -33,13 +33,13 @@ class UserStore {
         .from('profiles')
         .select('*')
         .eq('id', authUser.id)
-        .single(); 
+        .single();
 
       if (error) throw error;
 
       runInAction(() => {
         this.user = authUser;
-        this.profile = data; 
+        this.profile = data;
       });
     } catch (error) {
       console.error("Error fetching user profile:", error.message);
@@ -56,7 +56,7 @@ class UserStore {
     } catch (error) {
       throw error;
     } finally {
-      runInAction(() => { this.isLoading = false; }); 
+      runInAction(() => { this.isLoading = false; });
     }
   }
 
@@ -66,12 +66,13 @@ class UserStore {
     try {
       const data = await authService.signUp(email, password, fullName);
       if (data?.user) {
+        await authService.signIn(email, password);
         await this.fetchUserProfile(data.user);
       }
     } catch (error) {
       throw error;
     } finally {
-      runInAction(() => { this.isLoading = false; }); 
+      runInAction(() => { this.isLoading = false; });
     }
   }
 
