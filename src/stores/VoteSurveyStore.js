@@ -77,22 +77,45 @@ export class VoteSurveyStore {
     }
   }
 
-  loadResults(surveyId) {
-    const mockResultsDb = {
-      'q1': {
-        'React': 15,
-        'Vue': 5,
-        'Angular': 2,
-        'Svelte': 1
-      },
-      'q2': {
-        'MobX': 12,
-        'Redux': 4,
-        'Context API': 6,
-        'Zustand': 3
-      }
-    };
-    this.currentResults = mockResultsDb;
+  async loadResults(surveyId) {
+    this.isLoading = true;
+    try {
+      const { data, error } = await supabase
+        .from('responses')
+        .select('question_id, chosen_option_index')
+        .eq('survey_id', surveyId);
+
+      if (error) throw error;
+      const processedResults = {};
+
+      data.forEach(row => {
+        const questId = row.question_id;
+       const question = this.currentSurvey?.questions.find(q => q.id === questId);
+       const optionAns = question && question.options ? question.options[row.chosen_option_index] : null;
+        if (optionAns) {
+          if (!processedResults[questId]) {
+            processedResults[questId] = {};
+          }
+
+          if (!processedResults[questId][optionAns]) {
+            processedResults[questId][optionAns] = 0;
+          }
+
+          processedResults[questId][optionAns] += 1;
+        }
+      });
+      
+      runInAction(() => {
+        this.currentResults = processedResults;
+      });
+
+    } catch (err) {
+      console.error(' Error loading live results from Supabase:', err.message);
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
   }
 
   selectOption(questionId, optionText) {
@@ -102,15 +125,26 @@ export class VoteSurveyStore {
   async submitVote() {
     this.isSubmitting = true;
 
-    const votePayload = {
-      survey_id: this.currentSurvey.id,
-      answers: { ...this.selectedOptions }
-    };
+    const rowsToInsert = [];
+    for (const questionId in this.selectedOptions) {
+      const optionText = this.selectedOptions[questionId];
+      const question = this.currentSurvey.questions.find(q => q.id === questionId);
+      const optionIndex = question ? question.options.indexOf(optionText) : -1;
 
-    console.log('Sending vote payload to DB:', votePayload);
+      rowsToInsert.push({
+        survey_id: this.currentSurvey.id,
+        question_id: questionId,
+        chosen_option_index: optionIndex
+      });
+    }
+
+    console.log('Sending vote payload to DB:', rowsToInsert);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { error } = await supabase
+        .from('responses')
+        .insert(rowsToInsert);
+      if (error) throw error;
 
       runInAction(() => {
         this.isSubmitting = false;
