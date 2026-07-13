@@ -31,7 +31,7 @@ const SurveyCard = ({ survey }) => {
                             <SurveyVisibilityBadge isAnonymous={survey.is_anonymous} />
                         </Group>
 
-                        {userStore.isAdmin && (
+                        {(userStore.isAdmin || userStore.user?.id === survey.created_by) && (
                             <ActionIcon 
                                 color="red" 
                                 variant="subtle" 
