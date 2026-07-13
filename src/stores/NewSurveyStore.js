@@ -1,11 +1,12 @@
 import { observable, action, makeObservable, runInAction } from 'mobx';
 import { supabase } from '../services/supabaseClient';
 import { surveyService } from '../services/surveyService';
+import { DEFAULT_CATEGORY } from '../constants/categories';
 
 export class NewSurveyStore {
   title = '';
   isAnonymous = false;
-  category = 'General';
+  category = DEFAULT_CATEGORY;
   questions = [
     { question_text: '', options: ['', '', '', ''] }
   ];
@@ -17,12 +18,14 @@ export class NewSurveyStore {
     makeObservable(this, {
       title: observable,
       isAnonymous: observable,
+      category: observable,
       questions: observable,
       isLoading: observable,
       error: observable,
       isSuccess: observable,
       setTitle: action,
       setIsAnonymous: action,
+      setCategory: action,
       addQuestion: action,
       removeQuestion: action,
       updateQuestionText: action,
@@ -38,6 +41,10 @@ export class NewSurveyStore {
 
   setIsAnonymous = (value) => {
     this.isAnonymous = value;
+  }
+
+  setCategory = (value) => {
+    this.category = value;
   }
 
   addQuestion = () => {
@@ -80,7 +87,7 @@ export class NewSurveyStore {
     const surveyPayload = { 
         title: this.title, 
         is_anonymous: this.isAnonymous,
-        category: this.category || 'General',
+        category: this.category || DEFAULT_CATEGORY,
         created_by: userId 
     };
 
@@ -115,6 +122,7 @@ export class NewSurveyStore {
   resetForm = () => {
     this.title = '';
     this.isAnonymous = false;
+    this.category = DEFAULT_CATEGORY;
     this.questions = [{ question_text: '', options: ['', '', '', ''] }];
     this.isSuccess = false;
   }

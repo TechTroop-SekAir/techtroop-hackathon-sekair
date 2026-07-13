@@ -1,6 +1,9 @@
+export const DEFAULT_CATEGORY = 'General';
+
 export const CATEGORIES_CONFIG = [
     { value: 'all',     label: 'all'     ,color: 'gray' },
-    { value: 'studies', label: 'Studies' ,color: 'blue'},
+    { value: 'general', label: 'General' ,color: 'blue' },
+    { value: 'studies', label: 'Studies' ,color: 'yellow'},
     { value: 'social',  label: 'Social'  ,color: 'teal'},
     { value: 'humor',   label: 'Humor'   ,color: 'grape'}
   ];

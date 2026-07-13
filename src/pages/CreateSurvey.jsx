@@ -73,8 +73,10 @@ const CreateSurvey = observer(() => {
               <SurveySettingsCard
                 title={store.title}
                 isAnonymous={store.isAnonymous}
+                category={store.category}
                 onTitleChange={(val) => store.setTitle(val)}
                 onAnonymousChange={(val) => store.setIsAnonymous(val)}
+                onCategoryChange={(val) => store.setCategory(val)}
               />
 
               <Divider label="Survey Questions" labelPosition="center" my="lg" />

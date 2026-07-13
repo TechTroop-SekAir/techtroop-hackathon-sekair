@@ -5,6 +5,7 @@ import { IconSearch } from '@tabler/icons-react';
 import { dashboardStore } from '../stores/DashboardStore';
 import { CATEGORIES_CONFIG } from '../constants/categories';
 import { VISIBILITY_CONFIG } from '../constants/visibility';
+import { Categories } from './Categories';
 
 const SurveyFilters = observer(() => {
   const store = dashboardStore;
@@ -37,30 +38,11 @@ const SurveyFilters = observer(() => {
           radius="md"
         />
 
-        <Group gap="xs" wrap="wrap">
-          {CATEGORIES_CONFIG.map((category) => {
-            const isSelected = store.selectedCategory === category.value;
-
-            return (
-              <Button
-                key={category.value}
-                size="xs"
-                radius="xl" 
-                color={category.color}
-                variant={isSelected ? 'filled' : 'light'}
-                onClick={() => store.setSelectedCategory(category.value)}
-                style={{
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    transform: 'scale(1.05)'
-                  }
-                }}
-              >
-                {category.label}
-              </Button>
-            );
-          })}
-        </Group>
+        <Categories 
+          value={store.selectedCategory} 
+          onChange={(val) => store.setSelectedCategory(val)} 
+          showAll={true} 
+        />
 
         <SegmentedControl
             size="xs"
