@@ -5,7 +5,13 @@ import { userService } from '../services/userService';
 class UserStore {
   user = null;
   profile = null;
+  createdSurveys = [];
   answeredSurveysCount = 0;
+
+  viewedProfile = null;
+  viewedCreatedSurveys = [];
+  viewedAnsweredSurveysCount = 0;
+
   isLoading = true;
   isProfileLoading = false;
 
@@ -45,21 +51,43 @@ class UserStore {
     }
   }
 
-  async fetchProfileDashboardData() {
-    if (!this.user) return;    
+  async fetchProfileDashboardData(targetUserId = null) {
     this.isProfileLoading = true;
     
+    const isOwn = !targetUserId || targetUserId === this.user?.id;
+    const finalUserId = isOwn ? this.user?.id : targetUserId;
+
+    if (!finalUserId) {
+      runInAction(() => { this.isProfileLoading = false; });
+      return;
+    }
+    
     try {
-      const [createdSurveysData, votesData] = await Promise.all([
-        userService.getSurveysCreatedByUser(this.user.id),
-        userService.getUserVotes(this.user.id)
-      ]);
+      const promises = [
+        userService.getSurveysCreatedByUser(finalUserId),
+        userService.getUserVotes(finalUserId)
+      ];
+      
+      if (!isOwn) {
+        promises.push(userService.getUserProfile(finalUserId));
+      }
+
+      const [surveysData, votesData, externalProfileData] = await Promise.all(promises);
 
       runInAction(() => {
-        this.createdSurveys = createdSurveysData;
-        
         const uniqueSurveyIds = new Set(votesData.map(v => v.survey_id));
-        this.answeredSurveysCount = uniqueSurveyIds.size;
+        const answeredCount = uniqueSurveyIds.size;
+
+        if (isOwn) {
+          this.createdSurveys = surveysData;
+          this.answeredSurveysCount = answeredCount;
+          this.viewedProfile = null;
+        }
+        else {
+          this.viewedCreatedSurveys = surveysData;
+          this.viewedAnsweredSurveysCount = answeredCount;
+          this.viewedProfile = externalProfileData;
+        }
       });
     } 
     catch (error) {
@@ -71,6 +99,23 @@ class UserStore {
       });
     }
   }
+
+  get displayedProfile() {
+    return this.viewedProfile || this.profile;
+  }
+
+  get displayedCreatedSurveys() {
+    return this.viewedProfile ? this.viewedCreatedSurveys : this.createdSurveys;
+  }
+
+  get displayedAnsweredSurveysCount() {
+    return this.viewedProfile ? this.viewedAnsweredSurveysCount : this.answeredSurveysCount;
+  }
+
+  get isViewingOwnProfile() {
+    return !this.viewedProfile;
+  }
+
 
   async login(email, password) {
     runInAction(() => { this.isLoading = true; });
