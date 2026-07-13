@@ -43,5 +43,62 @@ export const surveyService = {
 
         if (questionsError) throw questionsError;
         return true;
+    },
+
+    async checkIfUserAnswered(surveyId, userId) {
+        if (!userId) return false;
+
+        const { data, error } = await supabase
+            .from('responses')
+            .select('id')
+            .eq('survey_id', surveyId)
+            .eq('user_id', userId);
+
+        if (error) throw error;
+        return data && data.length > 0;
+    },
+
+    async getSurveyById(surveyId) {
+        const { data, error } = await supabase
+        .from('surveys')
+        .select(`
+            id,
+            title,
+            is_anonymous,
+            category,
+            questions (
+            id,
+            question_text,
+            options
+            ),
+            profiles:created_by (
+            name
+            )
+        `)
+        .eq('id', surveyId)
+        .single();
+
+        if (error) throw error;
+        return data;
+    },
+
+    async getSurveyResponses(surveyId) {
+        const { data, error } = await supabase
+            .from('responses')
+            .select('question_id, chosen_option_index')
+            .eq('survey_id', surveyId);
+
+        if (error) throw error;
+        return data || [];
+    },
+
+    async submitResponses(rowsToInsert) {
+        const { error } = await supabase
+            .from('responses')
+            .insert(rowsToInsert);
+
+        if (error) throw error;
+        return true;
     }
+    
 };

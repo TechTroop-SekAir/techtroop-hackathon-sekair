@@ -1,6 +1,7 @@
 import { observable, action, makeObservable, runInAction } from 'mobx';
 import { supabase } from '../services/supabaseClient';
 import { userStore } from './userStore';
+import { surveyService } from '../services/surveyService';
 
 export class VoteSurveyStore {
   currentSurvey = null;
@@ -29,21 +30,11 @@ export class VoteSurveyStore {
   }
 
   async checkIfUserAnswered(surveyId) {
-    let userIdVal = null;
-    if (userStore.profile) {
-      userIdVal = userStore.profile.id;
-    }
-
-    if (!userIdVal) {
-      return false;
-    }
+    const userIdVal = userStore.profile?.id;
+    if (!userIdVal) return false;
 
     try {
-      const { data, error } = await supabase
-        .from('responses')
-        .select('id')
-        .eq('survey_id', surveyId)
-        .eq('user_id', userIdVal);
+      const hasVoted = await surveyService.checkIfUserAnswered(surveyId, userIdVal);
 
       if (error) throw error;
 
@@ -55,10 +46,9 @@ export class VoteSurveyStore {
           }
         });
       }
-
       return hasVoted;
-
-    } catch (err) {
+    } 
+    catch (err) {
       console.error('Error checking user response:', err.message);
       return false;
     }
@@ -70,24 +60,8 @@ export class VoteSurveyStore {
     this.isAnswered = false;
 
     try {
-      const { data, error } = await supabase
-        .from('surveys')
-        .select(`
-          id,
-          title,
-          is_anonymous,
-          category,
-          questions (
-            id,
-            question_text,
-            options
-          ),
-          profiles (
-            name
-          )
-        `)
-        .eq('id', surveyId)
-        .single();
+      const data = await surveyService.getSurveyById(surveyId);
+      const isVoted = await this.checkIfUserAnswered(surveyId);
 
       if (error) throw error;
 
@@ -125,14 +99,9 @@ export class VoteSurveyStore {
   async loadResults(surveyId) {
     this.isLoading = true;
     try {
-      const { data, error } = await supabase
-        .from('responses')
-        .select('question_id, chosen_option_index')
-        .eq('survey_id', surveyId);
-
-      if (error) throw error;
+      const data = await surveyService.getSurveyResponses(surveyId);
       const processedResults = {};
-
+      
       data.forEach(row => {
         const questId = row.question_id;
         const optIndex = row.chosen_option_index;
@@ -196,10 +165,7 @@ export class VoteSurveyStore {
     console.log('Sending vote payload to DB:', rowsToInsert);
 
     try {
-      const { error } = await supabase
-        .from('responses')
-        .insert(rowsToInsert);
-      if (error) throw error;
+      await surveyService.submitResponses(rowsToInsert);
 
       runInAction(() => {
         this.isSubmitting = false;
