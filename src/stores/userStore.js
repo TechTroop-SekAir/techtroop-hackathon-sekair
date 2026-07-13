@@ -11,6 +11,7 @@ class UserStore {
   viewedProfile = null;
   viewedCreatedSurveys = [];
   viewedAnsweredSurveysCount = 0;
+  viewingOwn = true;
 
   isLoading = true;
   isProfileLoading = false;
@@ -53,8 +54,12 @@ class UserStore {
 
   async fetchProfileDashboardData(targetUserId = null) {
     this.isProfileLoading = true;
-    
+    this.viewedProfile = null;
+    this.viewedCreatedSurveys = [];
+    this.viewedAnsweredSurveysCount = 0;
+
     const isOwn = !targetUserId || targetUserId === this.user?.id;
+    this.viewingOwn = isOwn;
     const finalUserId = isOwn ? this.user?.id : targetUserId;
 
     if (!finalUserId) {
@@ -101,19 +106,19 @@ class UserStore {
   }
 
   get displayedProfile() {
-    return this.viewedProfile || this.profile;
+    return this.viewingOwn ? this.profile : this.viewedProfile;
   }
 
   get displayedCreatedSurveys() {
-    return this.viewedProfile ? this.viewedCreatedSurveys : this.createdSurveys;
+    return this.viewingOwn ? this.createdSurveys : this.viewedCreatedSurveys;
   }
 
   get displayedAnsweredSurveysCount() {
-    return this.viewedProfile ? this.viewedAnsweredSurveysCount : this.answeredSurveysCount;
+    return this.viewingOwn ? this.answeredSurveysCount : this.viewedAnsweredSurveysCount;
   }
 
   get isViewingOwnProfile() {
-    return !this.viewedProfile;
+    return this.viewingOwn;
   }
 
 
