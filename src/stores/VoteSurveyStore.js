@@ -35,7 +35,6 @@ export class VoteSurveyStore {
 
     try {
       const hasVoted = await surveyService.checkIfUserAnswered(surveyId, userIdVal);
-
       if (hasVoted) {
         runInAction(() => {
           if (!this.answeredSurveys.includes(surveyId)) {
