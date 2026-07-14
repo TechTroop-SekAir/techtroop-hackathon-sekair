@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Title, Card, Text, Radio, Button, Stack, Loader, Center, Box, Flex } from '@mantine/core';
+import { Container, Title, Text, Button, Stack, Loader, Center, Box, Flex } from '@mantine/core';
 import { IconCheck, IconArrowLeft } from '@tabler/icons-react';
 import { QuestionVoteCard } from '../components/QuestionVoteCard';
 import { voteSurveyStore } from '../stores/voteSurveyStore';
@@ -39,8 +39,8 @@ const VoteSurvey = observer(() => {
 
   if (store.isLoading || !store.currentSurvey) {
     return (
-      <Center style={{ height: '100vh' }}>
-        <Loader size="xl" />
+      <Center mih="100vh">
+        <Loader size="xl" color="brandCyan" />
       </Center>
     );
   }
@@ -54,11 +54,12 @@ const VoteSurvey = observer(() => {
   return (
     <Container size="sm" py="xl">
       <Flex justify="space-between" align="center" mb="lg" wrap="nowrap" gap="md">
-        <Title order={2} c="blue">
+        <Title order={2} fw={700} c="brandPurple">
           {store.currentSurvey.title}
         </Title>
         <Button
           variant="outline"
+          color="brandCyan"
           leftSection={<IconArrowLeft size={16} />}
           onClick={() => navigate('/dashboard')}
         >
@@ -75,7 +76,7 @@ const VoteSurvey = observer(() => {
         </Text>
       </Box>
 
-      <Stack spacing="lg">
+      <Stack gap="lg">
         {store.currentSurvey.questions.map((question) => (
           <QuestionVoteCard
             key={question.id}
@@ -86,7 +87,7 @@ const VoteSurvey = observer(() => {
         ))}
 
         <Button
-          color="blue"
+          color="brandCyan"
           size="md"
           radius="md"
           mt="md"

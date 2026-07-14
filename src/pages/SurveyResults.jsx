@@ -16,8 +16,8 @@ const SurveyResults = observer(() => {
 
     if (store.isLoading || !store.currentSurvey) {
         return (
-            <Center style={{ height: '100vh' }}>
-                <Loader size="xl" />
+            <Center mih="100vh">
+                <Loader size="xl" color="brandCyan" />
             </Center>
         );
     }
@@ -59,7 +59,7 @@ const SurveyResults = observer(() => {
         return (
             <Box key={index} mb="sm">
                 <Group justify="space-between" mb={5}>
-                    <Text size="sm" weight={500}>{answerText}</Text>
+                    <Text size="sm" fw={500}>{answerText}</Text>
                     <Text size="xs" c="dimmed">
                         {votesForAnswer} votes ({percent}%)
                     </Text>
@@ -67,7 +67,7 @@ const SurveyResults = observer(() => {
 
                 <Progress
                     value={percent}
-                    color="blue"
+                    color="brandCyan"
                     size="md"
                     radius="sm"
                 />
@@ -96,7 +96,7 @@ const SurveyResults = observer(() => {
                     {question.question_text}
                 </Text>
 
-                <Stack spacing="xs">
+                <Stack gap="xs">
                     {question.options.map((answerText, index) => {
                         return renderAnswerRow(answerText, index, allAnswers, totalVotes);
                     })}
@@ -109,22 +109,22 @@ const SurveyResults = observer(() => {
 
     return (
         <Container size="sm" py="xl">
-            <Title order={2} c="blue" ta="center" mb="xl">
+            <Title order={2} fw={700} c="brandPurple" ta="center" mb="xl">
                 {store.currentSurvey.title} - Results
             </Title>
             <Group justify="center" gap="sm" mb="xl">
                 <Text size="sm" c="dimmed">
-                    Created by: <b>{creatorName}</b>
+                    Created by: <Text component="span" fw={600}>{creatorName}</Text>
                 </Text>
                 <Badge color={store.currentSurvey.is_anonymous ? 'red' : 'green'} variant="light">
                     {store.currentSurvey.is_anonymous ? 'Anonymous Poll' : 'Public Poll'}
                 </Badge>
             </Group>
 
-            <Stack spacing="lg">
+            <Stack gap="lg">
                 {store.currentSurvey.questions.map(renderQuestionCard)}
 
-                <Button variant="outline" fullWidth onClick={() => navigate('/dashboard')}>
+                <Button variant="outline" color="brandCyan" fullWidth onClick={() => navigate('/dashboard')}>
                     Back to Dashboard
                 </Button>
             </Stack>

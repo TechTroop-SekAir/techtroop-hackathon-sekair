@@ -46,7 +46,12 @@ export const userService = {
 
     const { data: myResponses, error: myErr } = await supabase
       .from('responses')
-      .select('question_id, chosen_option_index, surveys(is_anonymous)')
+      .select(`
+        question_id, 
+        chosen_option_index, 
+        questions (question_text, options),
+        surveys (is_anonymous)
+      `)
       .eq('user_id', currentUserId);
 
     if (myErr) throw myErr;
@@ -85,15 +90,23 @@ export const userService = {
           name: otherName,
           role: otherRole,
           sharedQuestions: 0,
-          matchingAnswers: 0
+          matchingAnswers: 0,
+          agreements: [] 
         };
       }
 
       const myAns = myPublicResponses.find(r => r.question_id === resp.question_id);
       if (myAns) {
         userStats[otherUserId].sharedQuestions += 1;
+        
         if (myAns.chosen_option_index === resp.chosen_option_index) {
           userStats[otherUserId].matchingAnswers += 1;
+          
+          const optionText = myAns.questions?.options?.[myAns.chosen_option_index] || 'Unknown Option';
+          userStats[otherUserId].agreements.push({
+            questionText: myAns.questions?.question_text,
+            agreedAnswer: optionText
+          });
         }
       }
     });

@@ -20,12 +20,6 @@ export const Categories = ({ value, onChange, showAll = true }) => {
             color={category.color}
             variant={isSelected ? 'filled' : 'light'}
             onClick={() => onChange(category.value)}
-            style={{
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                transform: 'scale(1.05)'
-              }
-            }}
           >
             {category.label}
           </Button>

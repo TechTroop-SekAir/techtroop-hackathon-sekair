@@ -9,12 +9,13 @@ export const QuestionVoteCard = ({ question, selectedValue, onSelect }) => {
       </Text>
 
       <Radio.Group value={selectedValue?.toString()} onChange={onSelect}>
-        <Stack spacing="xs">
+        <Stack gap="xs">
           {question.options.map((option, index) => (
-            <Radio 
-              key={index} 
-              value={index.toString()} 
-              label={option} 
+            <Radio
+              key={index}
+              value={index.toString()}
+              label={option}
+              color="brandCyan"
             />
           ))}
         </Stack>

@@ -20,6 +20,7 @@ export const SurveySettingsCard = ({ title, isAnonymous, category, onTitleChange
           description="If enabled, votes will not be linked to student profiles"
           checked={isAnonymous}
           onChange={(e) => onAnonymousChange(e.currentTarget.checked)}
+          color="brandCyan"
           />
 
         <Box>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Container, Title, TextInput, Switch, Button, Card, Text, ActionIcon, Stack, Group, Divider, Flex, Center } from '@mantine/core';
-import { IconTrash, IconPlus, IconSend, IconArrowLeft } from '@tabler/icons-react';
+import { Container, Title, Text, Button, Stack, Group, Divider, Flex, Center } from '@mantine/core';
+import { IconPlus, IconSend, IconArrowLeft } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { newSurveyStore } from '../stores/newSurveyStore';
 import { SurveySettingsCard } from '../components/SurveySettingCard';
@@ -42,13 +42,13 @@ const CreateSurvey = observer(() => {
   return (
     <Container size="sm" py="xl">
       {store.isSuccess ? (
-        <Center style={{ height: '40vh' }}>
+        <Center mih="40vh">
           <Stack align="center" ta="center">
-            <Title order={2} c="green">Survey Created Successfully!</Title>
+            <Title order={2} fw={700} c="brandCyan">Survey Created Successfully!</Title>
             <Text size="sm" c="dimmed">
               Your survey has been published to Supabase.
             </Text>
-            <Text size="xs" c="blue" fw={500} mt="xs">
+            <Text size="xs" c="brandPurple" fw={500} mt="xs">
               Redirecting you to the dashboard...
             </Text>
           </Stack>
@@ -56,11 +56,12 @@ const CreateSurvey = observer(() => {
       ) : (
         <>
           <Flex justify="space-between" align="center" mb="lg" wrap="nowrap">
-            <Title order={2} c="blue">
+            <Title order={2} fw={700} c="brandPurple">
               Create New Survey
             </Title>
             <Button
               variant="outline"
+              color="brandCyan"
               leftSection={<IconArrowLeft size={16} />}
               onClick={() => navigate('/dashboard')}
             >
@@ -82,7 +83,7 @@ const CreateSurvey = observer(() => {
               <Divider label="Survey Questions" labelPosition="center" my="lg" />
 
               {store.error && (
-                <Text color="red" size="sm" ta="center" fw={500}>
+                <Text c="red" size="sm" ta="center" fw={500}>
                   {store.error}
                 </Text>
               )}
@@ -102,6 +103,7 @@ const CreateSurvey = observer(() => {
               <Group justify="space-between" mt="lg">
                 <Button
                   variant="outline"
+                  color="brandCyan"
                   leftSection={<IconPlus size={16} />}
                   onClick={store.addQuestion}
                   disabled={store.isLoading}
@@ -111,7 +113,7 @@ const CreateSurvey = observer(() => {
 
                 <Button
                   type="submit"
-                  color="blue"
+                  color="brandCyan"
                   rightSection={<IconSend size={16} />}
                   loading={store.isLoading}
                 >

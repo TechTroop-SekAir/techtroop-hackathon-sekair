@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { userStore } from '../stores/userStore';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { Box, Container, Paper, Stack, TextInput, PasswordInput, Button, Title, Text, Alert, Center, Image, Anchor } from '@mantine/core';
+import logo from '../assets/SekAir-Logo.png';
 
 export const AuthForm = observer(() => {
   const navigate = useNavigate();
@@ -36,57 +38,75 @@ export const AuthForm = observer(() => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '30px', border: '1px solid #ddd', borderRadius: '8px', fontFamily: 'sans-serif' }}>
-      <h2 style={{ textAlign: 'center' }}>{isRegister ? 'Sign Up to SekAir' : 'Sign In to SekAir'}</h2>
-      {errorMsg && <div style={{ color: 'red', marginBottom: '15px', fontSize: '14px', textAlign: 'center' }}>❌ {errorMsg}</div>}
+    <Box
+      flex={1}
+      py="xl"
+      bg="linear-gradient(90deg, var(--mantine-color-brandCyan-0), var(--mantine-color-brandPurple-0))"
+    >
+      <Container size="xs">
+        <Center mb="lg">
+          <Image src={logo} alt="SekAir" w={140} fit="contain" />
+        </Center>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        {isRegister && (
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-        )}
+        <Paper shadow="sm" radius="lg" withBorder p="xl">
+          <Title order={2} ta="center" fw={700} mb="xs">
+            {isRegister ? 'Sign Up to SekAir' : 'Sign In to SekAir'}
+          </Title>
+          <Text ta="center" c="dimmed" size="sm" mb="lg">
+            {isRegister ? 'Create an account to get started' : 'Welcome back, please log in'}
+          </Text>
 
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-        />
+          {errorMsg && (
+            <Alert color="red" variant="light" mb="md" radius="md">
+              {errorMsg}
+            </Alert>
+          )}
 
-        <input
-          type="password"
-          placeholder="Password (min 6 chars)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-        />
+          <form onSubmit={handleSubmit}>
+            <Stack gap="md">
+              {isRegister && (
+                <TextInput
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              )}
 
-        <button
-          type="submit"
-          style={{ padding: '12px', backgroundColor: '#008CBA', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
-        >
-          {isRegister ? 'Register' : 'Login'}
-        </button>
-      </form>
+              <TextInput
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
 
-      <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px' }}>
-        {isRegister ? 'Already have an account?' : "Don't have an account?"} {' '}
-        <span
-          onClick={() => { setIsRegister(!isRegister); setErrorMsg(''); }}
-          style={{ color: '#008CBA', cursor: 'pointer', textDecoration: 'underline' }}
-        >
-          {isRegister ? 'Login here' : 'Register here'}
-        </span>
-      </p>
-    </div>
+              <PasswordInput
+                placeholder="Password (min 6 chars)"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+
+              <Button type="submit" color="brandCyan" fullWidth size="md" mt="xs">
+                {isRegister ? 'Register' : 'Login'}
+              </Button>
+            </Stack>
+          </form>
+
+          <Text ta="center" size="sm" c="dimmed" mt="lg">
+            {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+            <Anchor
+              component="span"
+              c="brandPurple"
+              fw={600}
+              onClick={() => { setIsRegister(!isRegister); setErrorMsg(''); }}
+            >
+              {isRegister ? 'Login here' : 'Register here'}
+            </Anchor>
+          </Text>
+        </Paper>
+      </Container>
+    </Box>
   );
 })

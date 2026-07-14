@@ -97,8 +97,8 @@ const SurveyCard = observer(({ survey }) => {
                 </Box>
 
                 <Button
-                    variant="light"
-                    color={hasVoted ? "green" : "blue"}
+                    variant={hasVoted ? "light" : "filled"}
+                    color={hasVoted ? "brandPurple" : "brandCyan"}
                     fullWidth
                     mt="md"
                     leftSection={<IconCheck size={16} />}

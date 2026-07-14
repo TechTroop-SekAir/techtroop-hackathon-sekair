@@ -23,12 +23,13 @@ const UserProfile = observer(() => {
   const isOwnProfile = store.isViewingOwnProfile;
 
   return (
-    <Box style={{ position: 'relative', minHeight: '80vh' }}>
+    <Box pos="relative" mih="80vh">
       <LoadingOverlay visible={store.isProfileLoading} overlayProps={{ blur: 2 }} />
 
       {!isOwnProfile && (
         <Button
             variant="outline"
+            color="brandCyan"
             leftSection={<IconArrowLeft size={16} />}
             onClick={() => navigate('/users')}
         >
@@ -38,39 +39,39 @@ const UserProfile = observer(() => {
 
       <Container size="lg" py="xl">
         <Box mb="xl">
-          <Title order={2} c="blue" fw={800}>
+          <Title order={2} fw={800} c="brandPurple">
             {profile?.name || 'User Profile'}
           </Title>
           <Text size="sm" c="dimmed" mt="xs">
-            Account Role: <strong style={{ textTransform: 'uppercase' }}>{profile?.role || 'Student'}</strong>
+            Account Role: <Text component="strong" tt="uppercase">{profile?.role || 'Student'}</Text>
           </Text>
         </Box>
 
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="lg" mb="2xl">
-          <StatsCard 
+          <StatsCard
             title="Surveys Created"
             value={createdSurveys?.length || 0}
             label={isOwnProfile ? "Total surveys published by you" : `Total surveys published by ${profile?.name || 'this user'}`}
-            color="blue"
+            color="brandCyan"
             icon={IconFilePlus}
           />
-          
-          <StatsCard 
+
+          <StatsCard
             title="Surveys Answered"
             value={answeredCount}
             label={isOwnProfile ? "Total unique surveys you voted on" : `Total unique surveys this user voted on`}
-            color="teal"
+            color="brandPurple"
             icon={IconChecklist}
           />
         </SimpleGrid>
 
-        <Divider 
-          my="xl" 
-          label={isOwnProfile ? "My Created Surveys Dashboard" : `${profile?.name || 'User'}'s Surveys Dashboard`} 
-          labelPosition="center" 
+        <Divider
+          my="xl"
+          label={isOwnProfile ? "My Created Surveys Dashboard" : `${profile?.name || 'User'}'s Surveys Dashboard`}
+          labelPosition="center"
         />
 
-        <SurveyFilters 
+        <SurveyFilters
             searchQuery={store.searchQuery}
             onSearchQueryChange={(val) => store.setSearchQuery(val)}
             selectedCategory={store.selectedCategory}
@@ -78,11 +79,11 @@ const UserProfile = observer(() => {
             visibilityFilter={store.visibilityFilter}
             onVisibilityFilterChange={(val) => store.setVisibilityFilter(val)}
         />
-       
+
         <Box mt="lg">
           {(createdSurveys || []).length === 0 ? (
-            <Text ta="center" c="dimmed" fontStyle="italic" mt="xl">
-              {isOwnProfile 
+            <Text ta="center" c="dimmed" fs="italic" mt="xl">
+              {isOwnProfile
                 ? "You haven't created any surveys yet. Go ahead and make your first one!"
                 : "This user hasn't created any surveys yet."}
             </Text>

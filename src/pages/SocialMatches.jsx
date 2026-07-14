@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Container, Title, Card, Text, Group, Avatar, Center, Loader, SimpleGrid, RingProgress } from '@mantine/core';
+import { Container, Title, Text, Center, Loader, SimpleGrid } from '@mantine/core';
 import { userStore } from '../stores/userStore';
 import MatchCard from '../components/socialMatching/MatchCard';
 import EmptyMatchesState from '../components/socialMatching/EmptyMatchesState';
@@ -12,15 +12,15 @@ export const SocialMatches = observer(() => {
 
   if (userStore.isMatchesLoading) {
     return (
-      <Center style={{ height: '70vh' }}>
-        <Loader size="xl" />
+      <Center mih="70vh">
+        <Loader size="xl" color="brandPurple" />
       </Center>
     );
   }
 
   return (
     <Container size="md" py="xl">
-      <Title order={2} c="blue" ta="center" mb="xs">
+      <Title order={2} fw={700} c="brandPurple" ta="center" mb="xs">
         Classmate Compatibility Matcher
       </Title>
       <Text size="sm" c="dimmed" ta="center" mb="xl">

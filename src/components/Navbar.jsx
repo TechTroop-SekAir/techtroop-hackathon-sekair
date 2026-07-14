@@ -1,9 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Group, Button, Text, Menu, Avatar, UnstyledButton } from '@mantine/core';
+import { Box, Container, Group, Button, Text, Menu, Avatar, UnstyledButton, Image, Paper } from '@mantine/core';
 import { IconLogout, IconUser, IconLayoutDashboard, IconHeartHandshake } from '@tabler/icons-react';
 import { userStore } from '../stores/userStore';
+import sekAirLogo from '../assets/SekAir-Logo-No-Text.png';
 
 export const Navbar = observer(() => {
   const navigate = useNavigate();
@@ -17,41 +18,52 @@ export const Navbar = observer(() => {
   }
 
   return (
-    <Box bg="white" style={{ borderBottom: '1px solid #eee' }} py="sm" mb="xl">
+    <Paper
+      radius={0}
+      shadow="sm"
+      withBorder
+      py="sm"
+      mb="xl"
+      bg="linear-gradient(90deg, var(--mantine-color-brandCyan-0), var(--mantine-color-brandPurple-0))"
+    >
       <Container size="lg">
         <Group justify="space-between">
-          
+
           <Group gap="md">
-            <Text 
-              fw={900} 
-              c="blue" 
-              style={{ cursor: 'pointer', fontFamily: 'sans-serif' }} 
-              onClick={() => navigate('/dashboard')}
-            >
-              SekAir 🚀
-            </Text>
-            
-            <Button 
-              variant="subtle" 
-              size="xs" 
+            <UnstyledButton onClick={() => navigate('/dashboard')}>
+              <Image
+                src={sekAirLogo}
+                alt="SekAir"
+                h={36}
+                w="auto"
+                fit="contain"
+              />
+            </UnstyledButton>
+
+            <Button
+              variant="subtle"
+              color="brandCyan"
+              size="xs"
               leftSection={<IconLayoutDashboard size={14} />}
               onClick={() => navigate('/dashboard')}
             >
               Dashboard
             </Button>
 
-            <Button 
-              variant="subtle" 
-              size="xs" 
+            <Button
+              variant="subtle"
+              color="brandCyan"
+              size="xs"
               leftSection={<IconUser size={14} />}
               onClick={() => navigate('/users')}
             >
                 Users
             </Button>
 
-            <Button 
-              variant="subtle" 
-              size="xs" 
+            <Button
+              variant="subtle"
+              color="brandCyan"
+              size="xs"
               leftSection={<IconHeartHandshake size={14} />}
               onClick={() => navigate('/matches')}
             >
@@ -63,16 +75,16 @@ export const Navbar = observer(() => {
           <Group gap="xs">
             <Menu shadow="md" width={200} position="bottom-end">
               <Menu.Target>
-                <UnstyledButton style={{ display: 'block' }}>
+                <UnstyledButton>
                   <Group gap="xs">
-                    <Avatar radius="xl" color="blue" size="sm">
+                    <Avatar radius="xl" color="brandCyan" size="sm">
                       {userStore.profile?.name?.charAt(0).toUpperCase() || 'U'}
                     </Avatar>
                     <Box>
                       <Text size="sm" fw={600}>
                         {userStore.profile?.name || 'Student'}
                       </Text>
-                      <Text size="xxs" c="dimmed" style={{ textTransform: 'uppercase' }}>
+                      <Text size="xs" c="dimmed" tt="uppercase">
                         {userStore.profile?.role || 'user'}
                       </Text>
                     </Box>
@@ -82,7 +94,7 @@ export const Navbar = observer(() => {
 
               <Menu.Dropdown>
                 <Menu.Label>Account Settings</Menu.Label>
-                <Menu.Item 
+                <Menu.Item
                   leftSection={<IconUser size={14} />}
                   onClick={() => navigate(`/user/${userStore.user?.id}`)}
                 >
@@ -92,8 +104,8 @@ export const Navbar = observer(() => {
                 <Menu.Divider />
 
                 <Menu.Label>Actions</Menu.Label>
-                <Menu.Item 
-                  color="red" 
+                <Menu.Item
+                  color="red"
                   leftSection={<IconLogout size={14} />}
                   onClick={handleLogout}
                 >
@@ -105,6 +117,6 @@ export const Navbar = observer(() => {
 
         </Group>
       </Container>
-    </Box>
+    </Paper>
   );
 });

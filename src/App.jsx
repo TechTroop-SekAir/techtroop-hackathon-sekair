@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import VoteSurvey from './pages/VoteSurvey';
 import SurveyResults from './pages/SurveyResults';
 import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
 import UserProfile from './pages/UserProfile';
 import { UsersDashboard } from './pages/UsersDashboard';
 import { SocialMatches } from './pages/SocialMatches';
@@ -21,55 +22,60 @@ function App() {
     <>
       <MantineProvider theme={theme} defaultColorScheme="light">
         <BrowserRouter>
-          <Navbar/>
-          <Routes>
+          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Navbar/>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <Routes>
 
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/survey/:id" element={<VoteSurvey />} />
-            <Route path="/results/:id" element={<SurveyResults />} />
-            <Route 
-              path="/users" 
-              element={
-                <ProtectedRoute>
-                  <UsersDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route
-              path="/user/:id"
-              element={
-                <ProtectedRoute>
-                  <UserProfile />
-                </ProtectedRoute>
-              }
-            />
-            <Route 
-              path="/matches" 
-              element={
-                <ProtectedRoute>
-                  <SocialMatches />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="/login" element={<AuthForm />} />
-            <Route
-              path="/create"
-              element={
-                <ProtectedRoute>
-                  <CreateSurvey />
-                </ProtectedRoute>
-              }
-            />
+                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/survey/:id" element={<VoteSurvey />} />
+                <Route path="/results/:id" element={<SurveyResults />} />
+                <Route
+                  path="/users"
+                  element={
+                    <ProtectedRoute>
+                      <UsersDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/user/:id"
+                  element={
+                    <ProtectedRoute>
+                      <UserProfile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/matches"
+                  element={
+                    <ProtectedRoute>
+                      <SocialMatches />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/login" element={<AuthForm />} />
+                <Route
+                  path="/create"
+                  element={
+                    <ProtectedRoute>
+                      <CreateSurvey />
+                    </ProtectedRoute>
+                  }
+                />
 
-          </Routes>
+              </Routes>
+            </div>
+            <Footer/>
+          </div>
         </BrowserRouter>
       </MantineProvider>
     </>

@@ -6,7 +6,7 @@ export const StatsCard = ({ title, value, label, color, icon: Icon }) => {
     <Card shadow="sm" padding="md" radius="md" withBorder>
       <Group justify="space-between">
         <div>
-          <Text size="xs" c="dimmed" fw={700} style={{ textTransform: 'uppercase' }}>
+          <Text size="xs" c="dimmed" fw={700} tt="uppercase">
             {title}
           </Text>
           <Text size="xl" fw={900} mt={4}>

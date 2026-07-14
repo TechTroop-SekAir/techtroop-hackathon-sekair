@@ -57,8 +57,8 @@ const SurveyFilters = observer(({
           onChange={onVisibilityFilterChange}
           data={visibilityData}
           color={
-            visibilityFilter === 'anonymous' ? 'indigo' : 
-            visibilityFilter === 'public' ? 'teal' : 'blue'
+            visibilityFilter === 'anonymous' ? 'indigo' :
+            visibilityFilter === 'public' ? 'teal' : 'brandCyan'
           }
         />
       </Stack>
