@@ -37,3 +37,4 @@ SekAir is a social polling platform built specifically for classmates to create,
 *   **Frontend:** React, Vite, MobX, Mantine (UI & Charts)
 *   **Backend & DB:** Supabase (Database, Auth, Row-Level Security)
 
+
