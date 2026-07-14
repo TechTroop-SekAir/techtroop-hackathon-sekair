@@ -31,7 +31,9 @@ const SurveyCard = observer(({ survey }) => {
 
     const handleShare = (e) => {
         e.stopPropagation();
-        const surveyUrl = window.location.origin + "/survey/" + survey.id;
+        const currentHref = window.location.href;
+        const basePath = currentHref.split('#')[0] + "#";
+        const surveyUrl = basePath + "/survey/" + survey.id;
         const messageText = "Hey! I invite you to take my survey: " + survey.title + " on SekAir. Click here to answer: " + surveyUrl;
         const protocol = "https://";
         const domain = "api.whatsapp.com";
@@ -104,7 +106,7 @@ const SurveyCard = observer(({ survey }) => {
                     leftSection={<IconCheck size={16} />}
                     onClick={handleSurveyClick}
                 >
-                    {hasVoted? 'View Results' : 'Take Survey'}
+                    {hasVoted ? 'View Results' : 'Take Survey'}
                 </Button>
             </Stack>
         </Card>
