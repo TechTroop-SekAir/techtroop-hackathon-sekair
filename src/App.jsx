@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -21,7 +21,6 @@ function App() {
   return (
     <>
       <MantineProvider theme={theme} defaultColorScheme="light">
-        <BrowserRouter>
           <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar/>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -76,7 +75,6 @@ function App() {
             </div>
             <Footer/>
           </div>
-        </BrowserRouter>
       </MantineProvider>
     </>
   )
