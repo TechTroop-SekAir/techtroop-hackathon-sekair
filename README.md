@@ -4,11 +4,15 @@
 SekAir is a social polling platform built specifically for classmates to create, answer, and analyze surveys. The application enables users to learn more about each other, discover social connections, and uncover matching voting patterns between peers.
 
 ---
-##  Quick Links
-*   ** Project Presentation:** [ View Our Slides (Google Slides )]
-*   (https://docs.google.com/presentation/d/1Y1xHoZkiSM2zMhVr8DxYY3NhbZNhtQGI/edit?usp=drive_link&ouid=114613080574017526198&rtpof=true&sd=true)
-*   ** Live Application:** [Click Here]([url](https://techtroop-sekair.github.io/techtroop-hackathon-sekair))
+## 🚀 Quick Links
 
+- **📊 Project Presentation:**  
+  [View Our Slides (Google Slides)](https://docs.google.com/presentation/d/1Y1xHoZkiSM2zMhVr8DxYY3NhbZNhtQGI/edit?usp=drive_link&ouid=114613080574017526198&rtpof=true&sd=true)
+
+- **🌐 Live Application:**  
+  [Launch SekAir](https://techtroop-sekair.github.io/techtroop-hackathon-sekair/)
+
+  
 ##  Team Members & Roles
 
 *   **Ofek Cofman**
